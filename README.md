@@ -1,1 +1,2 @@
-# Text-based-adventure-game
+Fangqin Li fli31@stevens.edu
+
