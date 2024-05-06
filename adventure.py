@@ -1,5 +1,8 @@
 import sys
 import json
+import doctest
+import os
+# print(os.getcwd())
 
 class Game:
     def __init__(self, map_filename):
@@ -13,7 +16,8 @@ class Game:
                 self.get,
                 self.inventory,
                 self.quit,
-                self.help 
+                self.help,
+                self.drop
             ]
 
     def load_map(self, map_filename):
@@ -81,15 +85,23 @@ class Game:
         help_text = "You can run the following commands:\n"
         for command in self.commands:
             command_name = command.__name__
-            if command_name == "go" or command_name == "get":
-                help_text += f"  {command_name} ...\n"  # Add "..." after go and get
+            if command_name == "go" or command_name == "get" or command_name == "drop":
+                help_text += f"  {command_name} ...\n" 
             else:
                 help_text += f"  {command_name}\n"
-        print(help_text)  # Print the help text instead of returning it
+        print(help_text) 
 
 
     def quit(self):
         self.should_quit = True
+
+    def drop(self, item_name):
+        if item_name in self.player_inventory:
+            self.player_inventory.remove(item_name)
+            self.current_room["items"].append(item_name)
+            print(f"You drop the {item_name}.")
+        else:
+            print(f"You don't have a {item_name} to drop.")
 
 def main():
     if len(sys.argv) < 2:
@@ -97,14 +109,20 @@ def main():
         sys.exit(1)
 
     game = Game(sys.argv[1])
+
     print(game.look())
 
-    quit_game = False  # Flag to track if the game should end
+    while True:
+        try:
+            print("What would you like to do?")
+            command = input("> ").strip().lower()
+        except EOFError:
+            print("Use 'quit' to exit.")
+            continue
+        except KeyboardInterrupt:
+            print("\nGoodbye!")
+            break
 
-    while not quit_game:  # Continue until quit_game is True
-        print("What would you like to do?")
-        command = input("> ").strip().lower()
-     
         if command == "help":
             game.help()
         else:
@@ -143,13 +161,19 @@ def main():
                 else:
                     print("You're not carrying anything.")
 
+            elif verb == "drop":
+                if len(command) < 2:
+                    print("Sorry, you need to 'drop' something.")
+                else:
+                    item_name = command[1]
+                    game.drop(item_name)
+
             elif verb == "quit":
                 print("Goodbye!")
-                quit_game = True 
+                break
 
             else:
                 print("Sorry, I didn't understand that.")
-
 
 if __name__ == "__main__":
     main()
