@@ -8,7 +8,7 @@ https://github.com/FangqinLi/Text-based-adventure-game.git
 25 hours
 
 #a description of how you tested your code:
-I tested it using the command line with the terminal of vscode, to act like a real player who wants to play this game. I also
+I interacted with it using the command line with the terminal of vscode, to act like a real player who wants to play this game. I also ran doctest for every function.
 
 #any bugs or issues you could not resolve:
 
@@ -17,5 +17,5 @@ I tested it using the command line with the terminal of vscode, to act like a re
 
 
 #a list of the three extensions you’ve chosen to implement, with appropriate detail on them for the CAs to evaluate them (i.e., what are the new verbs/features, how do you exercise them, where are they in the map):
-1. Adding the "help" verb
-2.
+1. Adding the "help" verb as the example of project requirements stated. You can always type in "help" to get what command you can use and if they should be followed by an argument. As I added the verb "drop", it is also shown after you typed in "help", and of course, "help" itself.
+2. Adding the "drop" verb as the example of project requirements stated. A
