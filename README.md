@@ -14,7 +14,29 @@ I interacted with it using the command line with the terminal of vscode, to act 
 When I typed in ^D, it shows "I don't understand that" instead of the message indicating the user "Use 'quit' to exit."
 
 #an example of a difficult issue or bug and how you resolved:
+At first, after I "get" all items from a room, there is no item in the room but it shows "items: " instead of not showing it. Like this:
+  A red room
+  
+  This room is fancy. It's red!
+  
+  Exits: north, west
+  Items:
+  What would you like to do?
 
+but not:
+  A red room
+  
+  This room is fancy. It's red!
+  
+  Exits: north, west
+  What would you like to do?
+
+So I added 
+  if room_items:
+              return f"{room_name}\n\n{room_desc}\n\nExits: {room_exits}\nItems: {room_items}"
+          else:
+              return f"{room_name}\n\n{room_desc}\n\nExits: {room_exits}"
+to detect the existence of any items.
 
 #a list of the three extensions you’ve chosen to implement, with appropriate detail on them for the CAs to evaluate them (i.e., what are the new verbs/features, how do you exercise them, where are they in the map):
 1. Adding the "help" verb as the example of project requirements stated. You can always type in "help" to get what command you can use and if they should be followed by an argument. As I added the verb "drop", it is also shown after you typed in "help", and of course, "help" itself.
