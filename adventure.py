@@ -7,11 +7,20 @@ class Game:
         self.current_room = self.start_room
         self.player_inventory = []
 
+        self.commands = [
+                self.go,
+                self.look,
+                self.get,
+                self.inventory,
+                self.quit,
+                self.help 
+            ]
+
     def load_map(self, map_filename):
         with open(map_filename, 'r') as file:
             map_data = json.load(file)
 
-        self.rooms = {}  # Initialize the rooms dictionary
+        self.rooms = {} 
 
         for room_data in map_data["rooms"]:
             room_name = room_data["name"]
@@ -68,6 +77,20 @@ class Game:
     def inventory(self):
         return self.player_inventory
 
+    def help(self, *args):
+        help_text = "You can run the following commands:\n"
+        for command in self.commands:
+            command_name = command.__name__
+            if command_name == "go" or command_name == "get":
+                help_text += f"  {command_name} ...\n"  # Add "..." after go and get
+            else:
+                help_text += f"  {command_name}\n"
+        print(help_text)  # Print the help text instead of returning it
+
+
+    def quit(self):
+        self.should_quit = True
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python3 adventure.py [map_filename]")
@@ -76,50 +99,57 @@ def main():
     game = Game(sys.argv[1])
     print(game.look())
 
-    while True:
+    quit_game = False  # Flag to track if the game should end
+
+    while not quit_game:  # Continue until quit_game is True
         print("What would you like to do?")
-        command = input("> ").strip().lower().split(" ", 1)
-        verb = command[0]
-
-        if verb == "go":
-            if len(command) < 2:
-                print("Sorry, you need to 'go' somewhere.")
-            else:
-                direction = command[1]
-                if game.go(direction):
-                    print(game.look())
-                else:
-                    print(f"There's no way to go {direction}.")
-
-        elif verb == "look":
-            print(game.look())
-
-        elif verb == "get":
-            if len(command) < 2:
-                print("Sorry, you need to 'get' something.")
-            else:
-                item_name = command[1]
-                if game.get(item_name):
-                    print(f"You pick up the {item_name}.")
-                else:
-                    print(f"There's no {item_name} anywhere.")
-
-        elif verb == "inventory":
-            items = game.inventory()
-            if items:
-                print("Inventory:")
-                for item in items:
-                    print(" ", item)
-            else:
-                print("You're not carrying anything.")
-
-        elif verb == "quit":
-            print("Goodbye!")
-            break
-
+        command = input("> ").strip().lower()
+     
+        if command == "help":
+            game.help()
         else:
-            print("Sorry, I didn't understand that.")
+            command = command.split(" ", 1)
+            verb = command[0]
+
+            if verb == "go":
+                if len(command) < 2:
+                    print("Sorry, you need to 'go' somewhere.")
+                else:
+                    direction = command[1]
+                    if game.go(direction):
+                        print(game.look())
+                    else:
+                        print(f"There's no way to go {direction}.")
+
+            elif verb == "look":
+                print(game.look())
+
+            elif verb == "get":
+                if len(command) < 2:
+                    print("Sorry, you need to 'get' something.")
+                else:
+                    item_name = command[1]
+                    if game.get(item_name):
+                        print(f"You pick up the {item_name}.")
+                    else:
+                        print(f"There's no {item_name} anywhere.")
+
+            elif verb == "inventory":
+                items = game.inventory()
+                if items:
+                    print("Inventory:")
+                    for item in items:
+                        print(" ", item)
+                else:
+                    print("You're not carrying anything.")
+
+            elif verb == "quit":
+                print("Goodbye!")
+                quit_game = True 
+
+            else:
+                print("Sorry, I didn't understand that.")
+
 
 if __name__ == "__main__":
     main()
-
